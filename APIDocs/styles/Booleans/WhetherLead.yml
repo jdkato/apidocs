@@ -33,10 +33,10 @@ tests:
                 type: boolean
                 description: Set to true to email the owner.
     want: |
-      7:24:APIDocs.WhetherLead:Use 'Whether' instead of 'Indicates whether'.
-      10:24:APIDocs.WhetherLead:Use 'Whether' instead of 'True if'.
-      13:24:APIDocs.WhetherLead:Use 'Whether' instead of 'Boolean indicating whether'.
-      16:24:APIDocs.WhetherLead:Use 'Whether to' instead of 'Set to true to'.
+      7:24:Booleans.WhetherLead:Use 'Whether' instead of 'Indicates whether'.
+      10:24:Booleans.WhetherLead:Use 'Whether' instead of 'True if'.
+      13:24:Booleans.WhetherLead:Use 'Whether' instead of 'Boolean indicating whether'.
+      16:24:Booleans.WhetherLead:Use 'Whether to' instead of 'Set to true to'.
   - name: clean
     format: yaml
     view: APIDocs

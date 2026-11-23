@@ -33,13 +33,14 @@ in the section rather than every `*.yaml`: the View reads any file it is
 given as OpenAPI, so a workflow or a Helm chart under it is linted for
 nothing.
 
-`APIDocs` is the core style and is always on. `Imperative` is an opinion you
-can take instead of the core's third person.
+`APIDocs` is the core style and is always on. `Imperative` and `Booleans` are
+opinions you can take or leave.
 
 | Style | What it checks |
 | ----- | -------------- |
 | `APIDocs` | Summaries, descriptions, parameters, properties, and terms. See below. |
 | `Imperative` | Summaries written as commands, "Get a pet", in place of the third person, "Gets a pet". |
+| `Booleans` | A boolean's description starting with "Whether": `Whether the pet is vaccinated.` in place of `If true, ...` or `Indicates whether ...`. |
 
 ### Core rules
 
@@ -48,7 +49,7 @@ can take instead of the core's third person.
 | Summaries | `ThirdPerson`, `SummaryVerb`, `SummaryPeriod`, `SummaryLength` | `Get a pet`, `The pet with this ID`, `List pets.`, a 16-word summary |
 | Descriptions | `DescriptionPeriod`, `Restated` | `Return every pet` with no period, a description that repeats its summary |
 | Either | `Filler` | `Endpoint for listing pets`, `API to add a pet`, `This endpoint returns ...` |
-| Fields | `Capital`, `FieldName`, `Whether`, `WhetherLead` | `maximum number of pets`, `name: The name.`, a boolean described as `If true, ...` or `Indicates whether ...` |
+| Fields | `Capital`, `FieldName` | `maximum number of pets`, `name: The name.` |
 | Terms | `Terms`, `Stutter` | `Id`, `url`, `Json`, `http`, `Returns returns` |
 
 Every rule file starts with a comment explaining what it checks, and most
@@ -70,7 +71,7 @@ Limits are parameters, and any rule can be turned off:
 
 ```ini
 APIDocs.SummaryLength[max] = 8
-APIDocs.Whether = NO
+APIDocs.Filler = NO
 ```
 
 The View names each kind of prose as a scope, so a rule of your own can
@@ -121,10 +122,9 @@ report: each alert is right about the text and may name the other's line.
   and the [Red Hat supplementary style guide, URL](https://redhat-documentation.github.io/supplementary-style-guide/#url).
   `Terms`.
 
-`SummaryPeriod`, `Stutter`, `Whether`, `WhetherLead`, and `Imperative` are
-this package's conventions. Google's guide describes a boolean as "True if
-...; false otherwise" instead of "Whether ...", so turn the two `Whether`
-rules off if you follow it.
+`SummaryPeriod`, `Stutter`, `Imperative`, and `Booleans` are this package's
+conventions. `Booleans` is opt-in because Google's guide describes a boolean
+as "True if ...; false otherwise" instead of "Whether ...".
 
 ## Development
 

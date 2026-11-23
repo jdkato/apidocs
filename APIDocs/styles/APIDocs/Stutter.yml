@@ -2,7 +2,7 @@
 # pasted in front of a description that already had a verb.
 extends: repetition
 message: "'%s' is repeated."
-level: error
+level: warning
 scope:
   - apititle
   - apidescription

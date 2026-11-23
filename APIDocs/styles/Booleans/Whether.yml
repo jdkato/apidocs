@@ -23,7 +23,7 @@ tests:
                 type: boolean
                 description: If true, the pet has had its shots.
     want: |
-      7:24:APIDocs.Whether:Start a boolean's description with 'Whether', not 'If'.
+      7:24:Booleans.Whether:Start a boolean's description with 'Whether', not 'If'.
   - name: clean
     format: yaml
     view: APIDocs
