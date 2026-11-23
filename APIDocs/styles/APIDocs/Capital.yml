@@ -1,0 +1,50 @@
+# Summaries and the descriptions of parameters, properties, and schemas
+# start with a capital letter. A first word with a capital inside it, like
+# `petId`, is an identifier and is left alone.
+extends: existence
+message: "Start with a capital letter: '%s'."
+link: https://developers.google.com/style/api-reference-comments#parameters
+level: warning
+scope:
+  - opsummary
+  - param
+  - flag
+  - property
+  - schema
+nonword: true
+action:
+  name: edit
+  params:
+    - capitalize
+raw:
+  - '^[a-z]+(?=[\s,;:.]|$)'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: list pets
+            parameters:
+              - name: limit
+                in: query
+                description: maximum number of pets to return.
+    want: |
+      4:16:APIDocs.Capital:Start with a capital letter: 'list'.
+      8:24:APIDocs.Capital:Start with a capital letter: 'maximum'.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List pets
+            parameters:
+              - name: limit
+                in: query
+                description: petId values to skip.
+    want: ""

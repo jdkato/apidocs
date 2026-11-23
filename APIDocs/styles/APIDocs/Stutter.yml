@@ -1,0 +1,45 @@
+# "Returns returns the pet": a word typed twice, often where a summary was
+# pasted in front of a description that already had a verb.
+extends: repetition
+message: "'%s' is repeated."
+level: error
+scope:
+  - apititle
+  - apidescription
+  - tagdescription
+  - opsummary
+  - opdescription
+  - restated
+  - param
+  - flag
+  - fieldname
+  - schema
+  - property
+ignorecase: true
+alpha: true
+tokens:
+  - '[^\s.!?]+'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List pets
+            description: Returns returns every pet in the the store.
+    want: |
+      5:20:APIDocs.Stutter:'returns' is repeated.
+      5:49:APIDocs.Stutter:'the' is repeated.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List pets
+            description: Return every pet in the store.
+    want: ""

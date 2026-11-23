@@ -1,0 +1,8 @@
+fixtures/openapi.json:11:21:APIDocs.ThirdPerson:Start the summary in the third person: 'Lists', not 'List'.
+fixtures/openapi.json:17:29:APIDocs.Capital:Start with a capital letter: 'zone'.
+fixtures/openapi.json:23:29:APIDocs.WhetherLead:Use 'Whether' instead of 'True if'.
+fixtures/openapi.json:32:43:APIDocs.SummaryPeriod:Drop the period at the end of the summary.
+fixtures/openapi.json:33:69:APIDocs.Terms:Use 'URL' instead of 'url'.
+fixtures/openapi.json:33:71:APIDocs.DescriptionPeriod:End the description with a period.
+fixtures/openapi.json:42:36:APIDocs.Stutter:'alert' is repeated.
+fixtures/openapi.json:53:59:APIDocs.FieldName:The description only repeats the field's name. Say what the value means.

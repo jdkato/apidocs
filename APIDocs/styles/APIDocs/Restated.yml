@@ -1,0 +1,34 @@
+# A description that repeats the summary word for word adds a line to read
+# and nothing to learn. Say what the summary can't: what comes back, what
+# fails, what it costs.
+extends: existence
+message: "The description repeats the summary. Add what the summary leaves out, or drop it."
+link: https://spec.openapis.org/oas/v3.1.0#operation-object
+level: suggestion
+scope: restated
+nonword: true
+raw:
+  - '^.+'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          post:
+            summary: Add a pet
+            description: Add a pet.
+    want: |
+      5:20:APIDocs.Restated:The description repeats the summary. Add what the summary leaves out, or drop it.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          post:
+            summary: Add a pet
+            description: Add a pet to the store and return it with its new ID.
+    want: ""

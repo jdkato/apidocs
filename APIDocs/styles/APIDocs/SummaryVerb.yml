@@ -1,0 +1,34 @@
+# A summary names an action, so it starts with the verb. An article or a
+# pronoun in front means it names a thing instead.
+extends: existence
+message: "Start the summary with a verb, not '%s'."
+link: https://developers.google.com/style/api-reference-comments#description
+level: warning
+scope: opsummary
+nonword: true
+raw:
+  - '^(?:A|An|The|This(?! (?:endpoint|API|operation|method|route|call|request)\b)|These|Our|Your|My)\b'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: The list of pets
+          post:
+            summary: A new pet
+    want: |
+      4:16:APIDocs.SummaryVerb:Start the summary with a verb, not 'The'.
+      6:16:APIDocs.SummaryVerb:Start the summary with a verb, not 'A'.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List the pets in a store
+    want: ""

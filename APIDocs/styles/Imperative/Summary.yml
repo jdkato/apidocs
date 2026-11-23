@@ -1,0 +1,40 @@
+# Opt-in: summaries read as commands, "Get a pet", "List orders". Turn
+# APIDocs.ThirdPerson off beside it.
+extends: substitution
+message: "Start the summary with the imperative: '%s', not '%s'."
+level: warning
+scope: opsummary
+ignorecase: true
+swap:
+  '^(Get|List|Find|Return|Add|Create|Update|Delete|Remove|Retrieve|Replace|Upload|Download|Place|Log|Send|Cancel|Check|Register|Set|Read|Write|Start|Stop|Run|Assign|Generate|Validate|Archive|Restore|Export|Import|Invite|Revoke|Grant|Count|Query|Submit|Approve|Reject|Close|Open|Lock|Unlock|Attach|Detach|Subscribe|Unsubscribe|Load|Save|Move|Merge|Mark|Enable|Disable|Resolve|Describe|Show|Accept|Upsert|Rename|Reset|Trigger|Execute|Calculate|Convert|Lookup|Look|Request|Schedule|Provision|Revert|Sync)s': '$1'
+  '^(Fetch|Search|Push|Match|Refresh|Publish|Finish|Dispatch|Patch|Batch|Watch|Flush)es': '$1'
+  '^(Appl|Cop|Modif|Verif|Notif|Specif|Identif|Quer)ies': '$1y'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: Gets a pet by ID
+          post:
+            summary: Searches pets
+          put:
+            summary: Modifies a pet
+    want: |
+      4:16:Imperative.Summary:Start the summary with the imperative: 'Get', not 'Gets'.
+      6:16:Imperative.Summary:Start the summary with the imperative: 'Search', not 'Searches'.
+      8:16:Imperative.Summary:Start the summary with the imperative: 'Modify', not 'Modifies'.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: Get a pet that returns lists
+          post:
+            summary: Listen for events
+    want: ""

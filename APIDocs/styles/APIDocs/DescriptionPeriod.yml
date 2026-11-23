@@ -1,0 +1,48 @@
+# A description is prose, rendered as a paragraph under the operation, so it
+# is written in sentences. A paragraph that leads into a list may end with a
+# colon.
+extends: existence
+message: "End the description with a period."
+link: https://learn.microsoft.com/en-us/style-guide/developer-content/reference-documentation#elements-of-a-reference-article
+level: warning
+scope:
+  - paragraph.opdescription
+  - paragraph.apidescription
+  - paragraph.tagdescription
+nonword: true
+action:
+  name: edit
+  params:
+    - suffix
+    - '.'
+raw:
+  - '[^.!?:]$'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List pets
+            description: |
+              Return every pet in the store,
+              one page at a time
+    want: |
+      7:26:APIDocs.DescriptionPeriod:End the description with a period.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List pets
+            description: |
+              Return every pet in the store. Filter by:
+
+              - status
+              - tag
+    want: ""

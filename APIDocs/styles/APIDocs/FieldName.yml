@@ -1,0 +1,46 @@
+# "name: The name." A description that only repeats the field's name tells
+# the reader nothing the name didn't. Say what the value means: its format,
+# its units, what it defaults to.
+extends: existence
+message: "The description only repeats the field's name. Say what the value means."
+link: https://learn.microsoft.com/en-us/style-guide/developer-content/reference-documentation#elements-of-a-reference-article
+level: warning
+scope: fieldname
+nonword: true
+raw:
+  - '^.+'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            parameters:
+              - name: pet_id
+                in: query
+                description: Pet ID
+      components:
+        schemas:
+          Pet:
+            properties:
+              name:
+                type: string
+                description: The name.
+    want: |
+      7:24:APIDocs.FieldName:The description only repeats the field's name. Say what the value means.
+      14:24:APIDocs.FieldName:The description only repeats the field's name. Say what the value means.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      components:
+        schemas:
+          Pet:
+            properties:
+              name:
+                type: string
+                description: The name the pet answers to, up to 64 characters.
+    want: ""

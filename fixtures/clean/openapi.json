@@ -1,0 +1,59 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Weather Alerts API",
+    "description": "Subscribe to severe weather alerts for a location.",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/alerts": {
+      "get": {
+        "summary": "Lists active alerts",
+        "description": "Return the alerts in effect now, newest first.",
+        "parameters": [
+          {
+            "name": "zone",
+            "in": "query",
+            "description": "The forecast zone code, such as `WAZ558`.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "urgent",
+            "in": "query",
+            "description": "Whether to return only immediate alerts.",
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "responses": { "200": { "description": "The alerts." } }
+      }
+    },
+    "/subscriptions": {
+      "post": {
+        "summary": "Creates a subscription",
+        "description": "Send each new alert for a zone to a webhook URL.",
+        "responses": { "201": { "description": "The subscription." } }
+      }
+    }
+  },
+  "webhooks": {
+    "alertIssued": {
+      "post": {
+        "summary": "Delivers an alert",
+        "description": "Deliver an alert to the subscriber's webhook as JSON.",
+        "responses": { "200": { "description": "Received." } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Alert": {
+        "description": "A warning, watch, or advisory.",
+        "type": "object",
+        "properties": {
+          "headline": { "type": "string", "description": "One line naming the event and the area it covers." },
+          "expired": { "type": "boolean", "description": "Whether the alert has ended." }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+# "Indicates whether" and "True if" say less than "Whether" alone, and the
+# fix is mechanical.
+extends: substitution
+message: "Use '%s' instead of '%s'."
+level: warning
+scope: flag
+ignorecase: true
+swap:
+  '^(?:indicates|determines|specifies|controls|defines|signals|states) (?:whether|if)': Whether
+  '^(?:an? )?(?:boolean|flag|bool) (?:that )?(?:indicat(?:es|ing)|determin(?:es|ing)|specif(?:ies|ying)) (?:whether|if)': Whether
+  '^true (?:if|when)': Whether
+  '^set (?:this )?to true to': Whether to
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      components:
+        schemas:
+          Pet:
+            properties:
+              vaccinated:
+                type: boolean
+                description: Indicates whether the pet has had its shots.
+              adopted:
+                type: boolean
+                description: True if the pet has a home.
+              listed:
+                type: boolean
+                description: Boolean indicating whether the pet is listed.
+              notify:
+                type: boolean
+                description: Set to true to email the owner.
+    want: |
+      7:24:APIDocs.WhetherLead:Use 'Whether' instead of 'Indicates whether'.
+      10:24:APIDocs.WhetherLead:Use 'Whether' instead of 'True if'.
+      13:24:APIDocs.WhetherLead:Use 'Whether' instead of 'Boolean indicating whether'.
+      16:24:APIDocs.WhetherLead:Use 'Whether to' instead of 'Set to true to'.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      components:
+        schemas:
+          Pet:
+            properties:
+              vaccinated:
+                type: boolean
+                description: Whether the pet has had its shots.
+              note:
+                type: string
+                description: Indicates whether anyone has asked about the pet.
+    want: ""

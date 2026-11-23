@@ -1,0 +1,72 @@
+# An OpenAPI 3.x document, YAML or JSON. Each kind of prose gets its own
+# scope, so a rule can hold a summary to one standard and a parameter to
+# another. Dasel evaluates both sides of `&&`, so a key that may be missing
+# is guarded with `?:` or a filter of its own.
+#
+# A value is placed in the source by its text, once, so no two scopes select
+# the same string: a boolean's description is in `flag` and not in `param`
+# or `property`, and one that only repeats its summary or field name is in
+# `restated` or `fieldname` alone. A boolean with an `enum` is a constant,
+# not a yes-or-no, and is read as any other field.
+engine: dasel
+scopes:
+  - name: apititle
+    expr: '[$this].filter(has("info")).map(info).filter(has("title")).map(title)'
+
+  - name: apidescription
+    expr: '[$this].filter(has("info")).map(info).filter(has("description")).map(description)'
+    type: md
+
+  - name: tagdescription
+    expr: '[$this].filter(has("tags")).map(tags).filter(typeOf($this) == "array").flatten().filter(has("description")).map(description)'
+    type: md
+
+  # Operations: the method keys of each path item under `paths` and, in
+  # 3.1, `webhooks`.
+  - name: opsummary
+    expr: '[$this].filter(has("paths")).map(paths).filter(typeOf($this) == "map").map(values()).flatten().filter(typeOf($this) == "map").map(entries()).flatten().filter(key == "get" || key == "put" || key == "post" || key == "delete" || key == "options" || key == "head" || key == "patch" || key == "trace").map(value).filter(has("summary")).map(summary)'
+
+  - name: opsummary
+    expr: '[$this].filter(has("webhooks")).map(webhooks).filter(typeOf($this) == "map").map(values()).flatten().filter(typeOf($this) == "map").map(entries()).flatten().filter(key == "get" || key == "put" || key == "post" || key == "delete" || key == "options" || key == "head" || key == "patch" || key == "trace").map(value).filter(has("summary")).map(summary)'
+
+  - name: opdescription
+    expr: '[$this].filter(has("paths")).map(paths).filter(typeOf($this) == "map").map(values()).flatten().filter(typeOf($this) == "map").map(entries()).flatten().filter(key == "get" || key == "put" || key == "post" || key == "delete" || key == "options" || key == "head" || key == "patch" || key == "trace").map(value).filter(has("description")).filter(typeOf(description) == "string").filter(has("summary") ? (typeOf(summary) == "string" ? toLower(trimSuffix(trim(description), ".")) != toLower(trimSuffix(trim(summary), ".")) : true) : true).map(description)'
+    type: md
+
+  - name: opdescription
+    expr: '[$this].filter(has("webhooks")).map(webhooks).filter(typeOf($this) == "map").map(values()).flatten().filter(typeOf($this) == "map").map(entries()).flatten().filter(key == "get" || key == "put" || key == "post" || key == "delete" || key == "options" || key == "head" || key == "patch" || key == "trace").map(value).filter(has("description")).filter(typeOf(description) == "string").filter(has("summary") ? (typeOf(summary) == "string" ? toLower(trimSuffix(trim(description), ".")) != toLower(trimSuffix(trim(summary), ".")) : true) : true).map(description)'
+    type: md
+
+  # An operation's description that says no more than its summary.
+  - name: restated
+    expr: '[$this].filter(has("paths")).map(paths).filter(typeOf($this) == "map").map(values()).flatten().filter(typeOf($this) == "map").map(entries()).flatten().filter(key == "get" || key == "put" || key == "post" || key == "delete" || key == "options" || key == "head" || key == "patch" || key == "trace").map(value).filter(has("description") && has("summary")).filter(typeOf(description) == "string" && typeOf(summary) == "string").filter(toLower(trimSuffix(trim(description), ".")) == toLower(trimSuffix(trim(summary), "."))).map(description)'
+
+  # Parameters: any object with a string `in` and a `name`, wherever it is
+  # declared. A boolean is one whose schema says so.
+  - name: param
+    expr: 'search(has("in") && has("name") && has("description")).filter(typeOf(in) == "string" && typeOf(name) == "string" && typeOf(description) == "string").filter(has("schema") ? (schema.has("type") ? (schema.type != "boolean" || schema.has("enum")) : true) : true).filter(toLower(description).trimPrefix("the ").replace(" ", "", "_", "", "-", "", ".", "") != toLower(name).replace("_", "", "-", "")).map(description)'
+    type: md
+
+  - name: flag
+    expr: 'search(has("in") && has("name") && has("description")).filter(typeOf(in) == "string" && typeOf(name) == "string" && typeOf(description) == "string").filter(has("schema") ? (schema.has("type") ? (schema.type == "boolean" && schema.has("enum") == false) : false) : false).filter(toLower(description).trimPrefix("the ").replace(" ", "", "_", "", "-", "", ".", "") != toLower(name).replace("_", "", "-", "")).map(description)'
+    type: md
+
+  - name: fieldname
+    expr: 'search(has("in") && has("name") && has("description")).filter(typeOf(in) == "string" && typeOf(name) == "string" && typeOf(description) == "string").filter(toLower(description).trimPrefix("the ").replace(" ", "", "_", "", "-", "", ".", "") == toLower(name).replace("_", "", "-", "")).map(description)'
+
+  # Schemas: each named schema under `components`, then every property of
+  # every object schema, at any depth.
+  - name: schema
+    expr: '[$this].filter(has("components")).map(components).filter(has("schemas")).map(schemas).filter(typeOf($this) == "map").map(values()).flatten().filter(has("description")).map(description)'
+    type: md
+
+  - name: property
+    expr: 'search(has("properties")).filter(typeOf(properties) == "map").map(properties.entries()).flatten().filter(value.has("description")).filter(typeOf(value.description) == "string").filter(value.has("type") ? (value.type != "boolean" || value.has("enum")) : true).filter(toLower(value.description).trimPrefix("the ").replace(" ", "", "_", "", "-", "", ".", "") != toLower(key).replace("_", "", "-", "")).map(value.description)'
+    type: md
+
+  - name: flag
+    expr: 'search(has("properties")).filter(typeOf(properties) == "map").map(properties.entries()).flatten().filter(value.has("description")).filter(typeOf(value.description) == "string").filter(value.has("type") ? (value.type == "boolean" && value.has("enum") == false) : false).filter(toLower(value.description).trimPrefix("the ").replace(" ", "", "_", "", "-", "", ".", "") != toLower(key).replace("_", "", "-", "")).map(value.description)'
+    type: md
+
+  - name: fieldname
+    expr: 'search(has("properties")).filter(typeOf(properties) == "map").map(properties.entries()).flatten().filter(value.has("description")).filter(typeOf(value.description) == "string").filter(toLower(value.description).trimPrefix("the ").replace(" ", "", "_", "", "-", "", ".", "") == toLower(key).replace("_", "", "-", "")).map(value.description)'

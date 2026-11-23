@@ -1,0 +1,45 @@
+# The reader already knows they are reading about an endpoint. "This
+# endpoint returns", "API to get", and "Endpoint for" put that first and
+# the action second. "This endpoint requires a token" says something else
+# and is left alone.
+extends: existence
+message: "Lead with what the operation does, not '%s'."
+link: https://developers.google.com/style/api-reference-comments#classes_interfaces_structs
+level: warning
+scope:
+  - opsummary
+  - opdescription
+ignorecase: true
+nonword: true
+raw:
+  - '^(?:This (?:endpoint|API|operation|method|route|call|request) (?:is used to|can be used to|will|lets|allows|enables|returns|retrieves|gets|fetches|lists|creates|updates|deletes|removes|adds|provides|performs)|(?:An? |The )?(?:API|endpoint|method|operation|route) (?:to|for|that|which)|Used to|Allows? (?:you|users|the user|clients|the caller) to|Lets? (?:you|users)|Enables? (?:you|users) to)\b'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: Endpoint for listing pets
+            description: This endpoint returns every pet in the store.
+          post:
+            summary: API to add a pet
+    want: |
+      4:16:APIDocs.Filler:Lead with what the operation does, not 'Endpoint for'.
+      5:20:APIDocs.Filler:Lead with what the operation does, not 'This endpoint returns'.
+      7:16:APIDocs.Filler:Lead with what the operation does, not 'API to'.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List pets
+            description: Return every pet in the store.
+          post:
+            summary: Add a pet
+            description: This endpoint requires a token with write access.
+    want: ""

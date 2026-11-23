@@ -1,0 +1,50 @@
+# A boolean's description completes "whether ...": "Whether the pet is
+# vaccinated." The reader learns what true means, and false is the rest.
+# A boolean is a parameter whose schema has `type: boolean`, or a property
+# with that type.
+extends: existence
+message: "Start a boolean's description with 'Whether', not '%s'."
+level: suggestion
+scope: flag
+nonword: true
+raw:
+  - '^(?!(?i:whether)\b|(?i:(?:indicates|determines|specifies|controls|defines|signals|states) (?:whether|if)|(?:an? )?(?:boolean|flag|bool) (?:that )?(?:indicat(?:es|ing)|determin(?:es|ing)|specif(?:ies|ying)) (?:whether|if)|true (?:if|when)|set (?:this )?to true to)\b)\S+'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      components:
+        schemas:
+          Pet:
+            properties:
+              vaccinated:
+                type: boolean
+                description: If true, the pet has had its shots.
+    want: |
+      7:24:APIDocs.Whether:Start a boolean's description with 'Whether', not 'If'.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            parameters:
+              - name: archived
+                in: query
+                description: Whether to include archived pets.
+                schema:
+                  type: boolean
+      components:
+        schemas:
+          Pet:
+            properties:
+              vaccinated:
+                type: boolean
+                description: Whether the pet has had its shots.
+              name:
+                type: string
+                description: If set, the name shown in listings.
+    want: ""

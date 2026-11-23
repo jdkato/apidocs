@@ -1,0 +1,30 @@
+# A summary is the operation's name in a reference sidebar or a generated
+# client's method list. The detail belongs in the description.
+extends: occurrence
+message: "%d words in a summary. Keep it short enough to scan; move the detail to the description."
+link: https://spec.openapis.org/oas/v3.1.0#operation-object
+level: suggestion
+scope: opsummary
+max: 10
+token: '\b\w+\b'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List the pets in the store, filtered by status and tag, one page at a time
+    want: |
+      4:16:APIDocs.SummaryLength:16 words in a summary. Keep it short enough to scan; move the detail to the description.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List pets
+    want: ""

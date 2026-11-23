@@ -1,0 +1,42 @@
+# A summary completes "This operation ...": "Gets a pet", "Lists orders".
+# Commands are the other common convention; for those, turn this rule off
+# and turn on the Imperative style.
+extends: substitution
+message: "Start the summary in the third person: '%s', not '%s'."
+link: https://google.aip.dev/192#style
+level: warning
+scope: opsummary
+ignorecase: true
+swap:
+  '^(Get|List|Find|Return|Add|Create|Update|Delete|Remove|Retrieve|Replace|Upload|Download|Place|Log|Send|Cancel|Check|Register|Set|Read|Write|Start|Stop|Run|Assign|Generate|Validate|Archive|Restore|Export|Import|Invite|Revoke|Grant|Count|Query|Submit|Approve|Reject|Close|Open|Lock|Unlock|Attach|Detach|Subscribe|Unsubscribe|Load|Save|Move|Merge|Mark|Enable|Disable|Resolve|Describe|Show|Accept|Upsert|Rename|Reset|Trigger|Execute|Calculate|Convert|Look|Request|Schedule|Provision|Revert|Sync)': '$1s'
+  '^(Fetch|Search|Push|Match|Refresh|Publish|Finish|Dispatch|Patch|Batch|Watch|Flush)': '$1es'
+  '^(Appl|Cop|Modif|Verif|Notif|Specif|Identif|Quer)y': '$1ies'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: Get a pet by ID
+          post:
+            summary: Search pets
+          put:
+            summary: Modify a pet
+    want: |
+      4:16:APIDocs.ThirdPerson:Start the summary in the third person: 'Gets', not 'Get'.
+      6:16:APIDocs.ThirdPerson:Start the summary in the third person: 'Searches', not 'Search'.
+      8:16:APIDocs.ThirdPerson:Start the summary in the third person: 'Modifies', not 'Modify'.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: Gets a pet by ID
+          post:
+            summary: Listens for events
+    want: ""

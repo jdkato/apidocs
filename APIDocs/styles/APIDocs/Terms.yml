@@ -1,0 +1,54 @@
+# The acronyms an API reference uses on every page, spelled one way. A media
+# type (`application/json`), a file extension, and a URL's scheme are not
+# prose and are left alone, as is anything in a code span.
+extends: substitution
+message: "Use '%s' instead of '%s'."
+link: https://developers.google.com/style/word-list#id
+level: warning
+scope:
+  - apititle
+  - apidescription
+  - tagdescription
+  - opsummary
+  - opdescription
+  - restated
+  - param
+  - flag
+  - fieldname
+  - schema
+  - property
+ignorecase: false
+swap:
+  '[Ii]d': ID
+  '[Ii]ds': IDs
+  '(?<![/.+])[Jj]son': JSON
+  '[Hh]ttp(?!s?:/)': HTTP
+  '[Hh]ttps(?!:/)': HTTPS
+  '(?<![/.])[Uu]rl': URL
+  '(?<![/.])[Uu]rls': URLs
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets/{petId}:
+          get:
+            summary: Find a pet by Id
+            description: Return the pet as Json, with a url for its photo, over http.
+    want: |
+      4:30:APIDocs.Terms:Use 'ID' instead of 'Id'.
+      5:38:APIDocs.Terms:Use 'JSON' instead of 'Json'.
+      5:51:APIDocs.Terms:Use 'URL' instead of 'url'.
+      5:75:APIDocs.Terms:Use 'HTTP' instead of 'http'.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets/{petId}:
+          get:
+            summary: Find a pet by ID
+            description: Return the pet as `application/json` or application/json, with the `url` field set. See https://example.com/docs.
+    want: ""

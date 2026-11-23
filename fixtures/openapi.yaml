@@ -1,0 +1,94 @@
+openapi: 3.0.3
+info:
+  title: Library API
+  description: |
+    Lend books to members of a branch library, and take them back
+  version: 1.0.0
+tags:
+  - name: books
+    description: Books in the catalog, with their copies and holds.
+  - name: loans
+    description: Loans of a copy to a member
+paths:
+  /books:
+    get:
+      tags: [books]
+      summary: Lists books.
+      description: This endpoint returns the books in the catalog as Json, one page at a time.
+      parameters:
+        - name: limit
+          in: query
+          description: maximum number of books to return.
+          schema:
+            type: integer
+        - name: available
+          in: query
+          description: If true, return only books with a copy on the shelf.
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A page of books.
+    post:
+      tags: [books]
+      summary: Add a book
+      description: Add a book.
+      responses:
+        '201':
+          description: The book, with its new ID.
+  /books/{bookId}:
+    parameters:
+      - name: bookId
+        in: path
+        required: true
+        description: Book Id
+        schema:
+          type: string
+    get:
+      tags: [books]
+      summary: The book with this ID
+      description: Return the book with its copies and the url of its cover.
+      responses:
+        '200':
+          description: The book.
+    delete:
+      tags: [books]
+      summary: Endpoint for removing a book from the catalog once every copy of it has been withdrawn
+      description: Remove the book and its holds. Returns returns nothing.
+      responses:
+        '204':
+          description: The book was removed.
+  /loans:
+    post:
+      tags: [loans]
+      summary: Lend a copy
+      description: Lend a copy to a member for three weeks.
+      responses:
+        '201':
+          description: The new loan.
+components:
+  schemas:
+    Book:
+      description: A title in the catalog.
+      type: object
+      properties:
+        isbn:
+          type: string
+          description: ISBN
+        title:
+          type: string
+          description: The title as printed on the title page.
+        reference:
+          type: boolean
+          description: Indicates whether the book stays in the library.
+        signed:
+          type: boolean
+          description: Whether the author signed this copy.
+    Loan:
+      description: A copy lent to a member.
+      type: object
+      properties:
+        due:
+          type: string
+          format: date
+          description: date the copy is due back, in the member's time zone.

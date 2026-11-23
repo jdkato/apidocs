@@ -1,0 +1,19 @@
+fixtures/openapi.yaml:5:65:APIDocs.DescriptionPeriod:End the description with a period.
+fixtures/openapi.yaml:11:44:APIDocs.DescriptionPeriod:End the description with a period.
+fixtures/openapi.yaml:16:16:Imperative.Summary:Start the summary with the imperative: 'List', not 'Lists'.
+fixtures/openapi.yaml:16:27:APIDocs.SummaryPeriod:Drop the period at the end of the summary.
+fixtures/openapi.yaml:17:20:APIDocs.Filler:Lead with what the operation does, not 'This endpoint returns'.
+fixtures/openapi.yaml:17:70:APIDocs.Terms:Use 'JSON' instead of 'Json'.
+fixtures/openapi.yaml:21:24:APIDocs.Capital:Start with a capital letter: 'maximum'.
+fixtures/openapi.yaml:26:24:APIDocs.Whether:Start a boolean's description with 'Whether', not 'If'.
+fixtures/openapi.yaml:35:20:APIDocs.Restated:The description repeats the summary. Add what the summary leaves out, or drop it.
+fixtures/openapi.yaml:44:22:APIDocs.FieldName:The description only repeats the field's name. Say what the value means.
+fixtures/openapi.yaml:44:27:APIDocs.Terms:Use 'ID' instead of 'Id'.
+fixtures/openapi.yaml:49:16:APIDocs.SummaryVerb:Start the summary with a verb, not 'The'.
+fixtures/openapi.yaml:50:60:APIDocs.Terms:Use 'URL' instead of 'url'.
+fixtures/openapi.yaml:56:16:APIDocs.Filler:Lead with what the operation does, not 'Endpoint for'.
+fixtures/openapi.yaml:56:16:APIDocs.SummaryLength:16 words in a summary. Keep it short enough to scan; move the detail to the description.
+fixtures/openapi.yaml:57:51:APIDocs.Stutter:'returns' is repeated.
+fixtures/openapi.yaml:77:24:APIDocs.FieldName:The description only repeats the field's name. Say what the value means.
+fixtures/openapi.yaml:83:24:APIDocs.WhetherLead:Use 'Whether' instead of 'Indicates whether'.
+fixtures/openapi.yaml:94:24:APIDocs.Capital:Start with a capital letter: 'date'.

@@ -1,0 +1,33 @@
+# A summary is a label, shown in a list of operations beside its method and
+# path. Labels don't end with a period.
+extends: existence
+message: "Drop the period at the end of the summary."
+level: warning
+scope: opsummary
+nonword: true
+action:
+  name: remove
+raw:
+  - '\.$'
+
+tests:
+  - name: fires
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List pets.
+    want: |
+      4:25:APIDocs.SummaryPeriod:Drop the period at the end of the summary.
+  - name: clean
+    format: yaml
+    view: APIDocs
+    input: |
+      paths:
+        /pets:
+          get:
+            summary: List pets
+            description: List every pet in the store.
+    want: ""
