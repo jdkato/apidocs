@@ -16,7 +16,7 @@ Requires Vale 3.21.0 or later.
 
 ```ini
 StylesPath = styles
-Packages = https://github.com/jdkato/apidocs/releases/latest/download/APIDocs.zip
+Packages = APIDocs
 
 [openapi.{yaml,yml,json}]
 BasedOnStyles = APIDocs
@@ -26,6 +26,10 @@ View = APIDocs
 ```console
 $ vale sync
 ```
+
+`APIDocs` is in the [package library](https://vale.sh/explorer), so the name
+is enough. To pin a version, give its release URL instead:
+`https://github.com/jdkato/apidocs/releases/download/<version>/APIDocs.zip`.
 
 The package ships a [View](https://docs.vale.sh/topics/views) named
 `APIDocs`, which is what reaches inside the document. Name your OpenAPI files
